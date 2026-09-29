@@ -1,21 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap");
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+@variant dark (&:where(.dark, .dark *));
 
-.gaegu-light {
-    font-family: "Gaegu", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
-
-.gaegu-regular {
-    font-family: "Gaegu", sans-serif;
+@font-face {
+    font-family: "Gaegu";
+    src: url("/fonts/Gaegu-Regular.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 
-.gaegu-bold {
-    font-family: "Gaegu", sans-serif;
-    font-weight: 700;
-    font-style: normal;
+:root {
+    color-scheme: light dark;
+}
+
+body {
+    font-family: "Gaegu", cursive;
+    @apply bg-white text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100;
 }

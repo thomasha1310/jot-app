@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const CourseSchema = z.object({
-    id: z.string(),
+    id: z.uuid(),
     name: z.string(),
     color: z.string(),
     icon: z.string(),
@@ -9,7 +9,7 @@ export const CourseSchema = z.object({
 });
 
 export const Coursework = z.object({
-    id: z.string(),
+    id: z.uuid(),
     courseId: z.string(),
     name: z.string(),
     date: z.string(),
@@ -31,13 +31,15 @@ export const CourseItemSchema = z.discriminatedUnion("type", [
 ]);
 
 export const TodoSchema = z.object({
-    id: z.string(),
+    id: z.uuid(),
     name: z.string(),
     isCompleted: z.boolean(),
 });
 
 export const AppStateSchema = z.object({
-    version: z.number(),
+    version: z.regex(
+        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
+    ),
     courses: z.array(CourseSchema),
     courseItems: z.array(CourseItemSchema),
     todos: z.array(TodoSchema),

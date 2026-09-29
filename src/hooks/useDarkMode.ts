@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function useDarkMode() {
+export function useDarkMode() {
     const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         const saved = localStorage.getItem("jot-theme");
         if (saved) return saved === "dark";
