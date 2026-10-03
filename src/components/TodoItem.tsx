@@ -1,6 +1,6 @@
 import { useAppStore } from "../store";
 import type { Todo } from "../types";
-import { CheckCircle2, Circle, Trash2 } from "lucide-react";
+import { SquareCheck, Square, Trash } from "lucide-react";
 
 interface TodoItemProps {
     todo: Todo;
@@ -10,30 +10,28 @@ export function TodoItem({ todo }: TodoItemProps) {
     const { toggleTodo, deleteTodo } = useAppStore();
 
     return (
-        <div className="flex items-start justify-between gap-2 p-2.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg group transition-colors">
-            <div
-                className="flex items-start gap-3 flex-1 min-w-0 cursor-pointer"
+        <li className="group flex items-start justify-between gap-2">
+            <button
+                className={`flex min-w-0 flex-1 cursor-pointer ${todo.isCompleted ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-800 dark:text-neutral-200"} transition-colors`}
                 onClick={() => toggleTodo(todo.id)}
             >
-                <button className="mt-0.5 shrink-0 focus:outline-none">
+                <span className="mr-3 mt-1 shrink-0">
                     {todo.isCompleted ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        <SquareCheck className="w-5 h-5" />
                     ) : (
-                        <Circle className="w-5 h-5 text-neutral-400 group-hover:text-neutral-500 transition-colors" />
+                        <Square className="w-5 h-5" />
                     )}
-                </button>
-                <span
-                    className={`text-base font-medium truncate ${todo.isCompleted ? "line-through text-neutral-400" : ""}`}
-                >
+                </span>
+                <span className="gaegu-regular min-w-0 text-lg text-left break-normal">
                     {todo.name}
                 </span>
-            </div>
+            </button>
             <button
                 onClick={() => deleteTodo(todo.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all focus:outline-none"
+                className="shrink-0 opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all focus:outline-none"
             >
-                <Trash2 className="w-4 h-4" />
+                <Trash className="w-4 h-4" />
             </button>
-        </div>
+        </li>
     );
 }

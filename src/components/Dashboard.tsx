@@ -38,9 +38,6 @@ export function Dashboard() {
                 <div className="w-80 overflow-hidden">
                     <TodoList />
                 </div>
-                <div className="min-w-0">
-                    <CalendarGrid />
-                </div>
             </div>
         </div>
     );
