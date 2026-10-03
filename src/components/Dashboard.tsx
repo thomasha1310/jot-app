@@ -1,6 +1,6 @@
 import { useAppStore } from "../store";
 import { CalendarGrid } from "./calendar/CalendarGrid";
-import { TodoList } from "./TodoList";
+import { TodoList } from "./todo-list/TodoList";
 
 export function Dashboard() {
     const { settings } = useAppStore();

@@ -1,4 +1,4 @@
-import { useAppStore } from "../store";
+import { useAppStore } from "../../store";
 import { TodoItem } from "./TodoItem";
 import { TodoItemNew } from "./TodoItemNew";
 

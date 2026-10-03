@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppStore } from "../store";
+import { useAppStore } from "../../store";
 import { Square } from "lucide-react";
 
 export function TodoItemNew() {

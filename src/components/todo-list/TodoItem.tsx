@@ -1,5 +1,5 @@
-import { useAppStore } from "../store";
-import type { Todo } from "../types";
+import { useAppStore } from "../../store";
+import type { Todo } from "../../types";
 import { SquareCheck, Square, Trash } from "lucide-react";
 
 interface TodoItemProps {
