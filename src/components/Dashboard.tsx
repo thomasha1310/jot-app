@@ -17,16 +17,15 @@ export function Dashboard() {
         month: "long",
         day: "numeric",
     })
-        .format(new Date())
-        .toLowerCase();
+        .format(new Date());
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-neutral-950 mx-8 gap-y-6">
+        <div className="flex flex-col h-full bg-white dark:bg-neutral-950 mx-8 gap-y-6 dark:text-neutral-200">
             {/* Top Header Section */}
             {settings.showGreeting && (
-                <div className="pt-3 pb-4 space-y-1 border-b border-neutral-200 mr-auto">
-                    <h2 className="text-3xl">good {getDayPeriod()}!</h2>
-                    <h1 className="text-5xl">today is {dateString}.</h1>
+                <div className="pt-3 pb-4 space-y-1 mr-auto">
+                    <h2 className="text-3xl">Good {getDayPeriod()}!</h2>
+                    <h1 className="text-5xl">Today is {dateString}.</h1>
                 </div>
             )}
 
@@ -37,6 +36,9 @@ export function Dashboard() {
             <div className="flex flex-row overflow-hidden gap-x-4">
                 <div className="w-80 overflow-hidden">
                     <TodoList />
+                </div>
+                <div>
+                    <CalendarGrid />
                 </div>
             </div>
         </div>

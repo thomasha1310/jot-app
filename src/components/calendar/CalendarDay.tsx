@@ -4,7 +4,7 @@ import { TaskCard } from "../TaskCard";
 
 interface CalendarDayProps {
     dateStr: string;
-    dayNum: number;
+    dayLabel: string;
     tasks: CourseItem[];
     courses: Course[];
     onEditTask: (task: CourseItem) => void;
@@ -12,7 +12,7 @@ interface CalendarDayProps {
 
 export function CalendarDay({
     dateStr,
-    dayNum,
+    dayLabel,
     tasks,
     courses,
     onEditTask,
@@ -21,18 +21,21 @@ export function CalendarDay({
         id: dateStr,
     });
 
+    // 
+
     return (
         <div
             ref={ref}
-            className={`min-h-40 p-2 border-r border-b border-neutral-200 dark:border-neutral-700 transition-colors ${
+            className={`min-h-36 p-1 border ${new Date().toDateString() == dateStr ? `border-blue-500` : `border-neutral-300`} transition-colors ${
                 isDropTarget
                     ? "bg-blue-50 dark:bg-blue-900/20"
-                    : "bg-transparent"
+                    : "bg-white dark:bg-neutral-900"
             }`}
         >
-            <div className="text-right text-sm text-neutral-400 mb-2 font-medium">
-                {dayNum}
+            <div className={`text-right text-sm text-neutral-500 pt-0.5 pr-2`}>
+                {dayLabel}
             </div>
+
             <div className="flex flex-col gap-2">
                 {tasks.map((task) => (
                     <TaskCard
