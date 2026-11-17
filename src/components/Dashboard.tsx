@@ -1,46 +1,43 @@
+import { addDays, toISODate, todayISO } from "../lib/dates";
 import { useAppStore } from "../store";
 import { CalendarGrid } from "./calendar/CalendarGrid";
-import { TodoList } from "./todo-list/TodoList";
+import { CourseStrip } from "./courses/CourseStrip";
+
+const dayPeriod = () => {
+    const hour = new Date().getHours();
+    if (hour < 5) return "still up?";
+    if (hour < 12) return "good morning.";
+    if (hour < 17) return "good afternoon.";
+    return "good evening.";
+};
 
 export function Dashboard() {
-    const { settings } = useAppStore();
+    const showGreeting = useAppStore((s) => s.settings.showGreeting);
+    const courseItems = useAppStore((s) => s.courseItems);
 
-    const getDayPeriod = () => {
-        const hour = new Date().getHours();
-        if (hour < 12) return "morning";
-        if (hour < 17) return "afternoon";
-        return "evening";
-    };
+    const today = todayISO();
+    const weekOut = toISODate(addDays(new Date(), 7));
+    const dueSoon = courseItems.filter(
+        (i) => i.status !== "complete" && i.date >= today && i.date < weekOut,
+    ).length;
+    const overdue = courseItems.filter((i) => i.status !== "complete" && i.date < today).length;
 
-    const dateString = new Intl.DateTimeFormat("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-    })
-        .format(new Date());
+    const dateString = new Date()
+        .toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+        .toLowerCase();
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-neutral-950 mx-8 gap-y-6 dark:text-neutral-200">
-            {/* Top Header Section */}
-            {settings.showGreeting && (
-                <div className="pt-3 pb-4 space-y-1 mr-auto">
-                    <h2 className="text-3xl">Good {getDayPeriod()}!</h2>
-                    <h1 className="text-5xl">Today is {dateString}.</h1>
-                </div>
-            )}
-
-            {/* Overdue Section (Placeholder) */}
-            {/* <OverdueSection /> */}
-
-            {/* Main Split Content */}
-            <div className="flex flex-row overflow-hidden gap-x-4">
-                <div className="w-80 overflow-hidden">
-                    <TodoList />
-                </div>
-                <div>
-                    <CalendarGrid />
-                </div>
-            </div>
-        </div>
+        <main className="flex min-h-0 min-w-0 flex-col gap-8">
+            <header>
+                {showGreeting && <p className="text-pencil">{dayPeriod()}</p>}
+                <h2 className="text-4xl font-semibold tracking-tight">{dateString}</h2>
+                <p className="mt-1 text-pencil">
+                    {dueSoon === 0 ? "nothing due in the next 7 days" : `${dueSoon} due in the next 7 days`}
+                    {overdue > 0 && <span className="text-paper">, {overdue} overdue</span>}
+                </p>
+            </header>
+            <CourseStrip />
+            <CalendarGrid />
+        </main>
     );
 }

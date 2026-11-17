@@ -1,37 +1,46 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Plus } from "lucide-react";
 import { useAppStore } from "../../store";
-import { Square } from "lucide-react";
 
 export function TodoItemNew() {
-    const addTodo = useAppStore((state) => state.addTodo);
-    const [newTask, setNewTask] = useState("");
+    const addTodo = useAppStore((s) => s.addTodo);
+    const [text, setText] = useState("");
+    // Escape clears and blurs; the blur that follows must not add anything.
+    const discarding = useRef(false);
 
-    const handleAdd = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        if (!newTask.trim()) return;
-        addTodo({
-            id: crypto.randomUUID(),
-            name: newTask.trim(),
-            isCompleted: false,
-        });
-        setNewTask("");
+    const commit = () => {
+        const name = text.trim();
+        if (name) addTodo({ id: crypto.randomUUID(), name, isCompleted: false });
+        setText("");
     };
 
     return (
         <li>
             <form
-                onSubmit={handleAdd}
-                className={`flex ${newTask ? "text-neutral-800 dark:text-neutral-200" : "text-neutral-400 dark:text-neutral-500"} transition-colors`}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    commit(); // Enter adds and keeps focus for the next one.
+                }}
+                className="flex items-start gap-2.5"
             >
-                <span className="mr-3 mt-1 shrink-0">
-                    <Square className="w-5 h-5" />
-                </span>
+                <Plus className="mt-[0.25em] size-[1.1em] shrink-0 text-pencil" aria-hidden />
                 <input
                     type="text"
-                    placeholder="Add a new task..."
-                    className="gaegu-regular min-w-0 flex-1 text-lg text-left focus:outline-none field-sizing-fixed placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
+                    aria-label="New to-do"
+                    placeholder="jot something down…"
+                    className="min-w-0 flex-1 bg-transparent placeholder:text-pencil focus:outline-none"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key !== "Escape") return;
+                        discarding.current = true;
+                        setText("");
+                        e.currentTarget.blur();
+                    }}
+                    onBlur={() => {
+                        if (discarding.current) discarding.current = false;
+                        else commit();
+                    }}
                 />
             </form>
         </li>

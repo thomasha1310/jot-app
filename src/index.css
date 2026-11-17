@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@fontsource-variable/newsreader/opsz.css";
+@import "@fontsource-variable/newsreader/opsz-italic.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @font-face {
@@ -9,11 +11,221 @@
     font-display: swap;
 }
 
+/*
+ * "The desk at night." Typeset things (courses, deadlines) are serif, like a
+ * syllabus; things you write yourself (todos) are in Gaegu, your handwriting.
+ * Course colours are highlighters. Lamp marks today and nothing else.
+ */
 :root {
-    color-scheme: light dark;
+    color-scheme: light;
+    --desk: #f2ede4;
+    --blotter: #e7dfd1;
+    --line: #d5c9b7;
+    --paper: #2a231d;
+    --pencil: #76695b;
+    --lamp: #b07d12;
+    --hl-strength: 62%;
+    --hl-faint: 24%;
+}
+
+.dark {
+    color-scheme: dark;
+    --desk: #1c1815;
+    --blotter: #27211c;
+    --line: #3a312a;
+    --paper: #e9dfcf;
+    --pencil: #8e8274;
+    --lamp: #f2c14e;
+    --hl-strength: 58%;
+    --hl-faint: 20%;
+}
+
+@theme inline {
+    --color-desk: var(--desk);
+    --color-blotter: var(--blotter);
+    --color-line: var(--line);
+    --color-paper: var(--paper);
+    --color-pencil: var(--pencil);
+    --color-lamp: var(--lamp);
+    --font-serif: "Newsreader Variable", Georgia, serif;
+    --font-hand: "Gaegu", "Comic Neue", cursive;
+}
+
+/* Newsreader runs small for its size; 17px keeps small labels readable. */
+html {
+    font-size: 17px;
 }
 
 body {
-    font-family: "Gaegu", cursive;
-    @apply bg-white text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100;
+    @apply bg-desk text-paper font-serif antialiased;
+    line-height: 1.45;
+}
+
+* {
+    scrollbar-color: var(--line) transparent;
+}
+
+/* Tailwind v4 leaves buttons with the default arrow; anything clickable gets a hand. */
+@layer base {
+    button:not(:disabled),
+    [role="button"],
+    [role="checkbox"],
+    [role="radio"],
+    label:has(input:not(:disabled)),
+    select {
+        cursor: pointer;
+    }
+}
+
+:focus-visible {
+    outline: 2px solid var(--lamp);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+::selection {
+    background: color-mix(in oklab, var(--lamp) 40%, transparent);
+}
+
+/*
+ * Ink: a highlighter underline and a pencil strike on top. Both layers always
+ * exist, so done animates background-size: the strike draws itself in.
+ *   .ink          faint marker underline (not started)
+ *   .ink-doing    same underline at full strength (in progress)
+ *   .ink-done     underline lifts, pencil strike drawn through
+ *   .ink-plain    no underline (your own to-dos)
+ */
+@property --ink-strength {
+    syntax: "<percentage>";
+    inherits: true;
+    initial-value: 18%;
+}
+
+.ink {
+    --hl: var(--pencil);
+    --ink-strength: var(--hl-faint);
+    background-image:
+        linear-gradient(var(--pencil), var(--pencil)),
+        linear-gradient(
+            color-mix(in oklab, var(--hl) var(--ink-strength), transparent),
+            color-mix(in oklab, var(--hl) var(--ink-strength), transparent)
+        );
+    background-repeat: no-repeat;
+    background-position:
+        0 58%,
+        0 92%;
+    background-size:
+        0% 0.09em,
+        100% 0.42em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    border-radius: 0.2em 0.5em 0.25em 0.45em;
+    padding: 0 0.18em;
+    margin: 0 -0.18em;
+    transition:
+        background-size 420ms cubic-bezier(0.6, 0, 0.2, 1),
+        --ink-strength 300ms ease,
+        color 300ms ease;
+}
+
+.ink-doing {
+    --ink-strength: var(--hl-strength);
+}
+
+.ink-done {
+    color: var(--pencil);
+    background-size:
+        100% 0.09em,
+        100% 0;
+}
+
+.ink-plain {
+    background-size:
+        0% 0.09em,
+        100% 0;
+}
+
+/* Hand-drawn checkbox: the tick draws itself in. */
+.tick-path {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 260ms cubic-bezier(0.6, 0, 0.2, 1) 60ms;
+}
+[aria-checked="true"] .tick-path {
+    stroke-dashoffset: 0;
+}
+
+/* Graphite flicks that burst from the box when a todo is checked. */
+@keyframes flick {
+    0% {
+        opacity: 0;
+        transform: rotate(var(--a)) translateY(-0.55em) scaleY(0.2);
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(var(--a)) translateY(-1.15em) scaleY(1);
+    }
+}
+.flick {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 0.4em;
+    margin-left: -1px;
+    border-radius: 2px;
+    background: var(--lamp);
+    transform-origin: 50% 0;
+    animation: flick 520ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes press {
+    0% {
+        transform: scale(1);
+    }
+    35% {
+        transform: scale(0.82) rotate(-6deg);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.press {
+    animation: press 320ms cubic-bezier(0.3, 0.7, 0.4, 1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ink,
+    .tick-path {
+        transition: none;
+    }
+    .flick {
+        display: none;
+    }
+    .press {
+        animation: none;
+    }
+}
+
+dialog::backdrop {
+    background: rgb(0 0 0 / 0.5);
+    backdrop-filter: blur(2px);
+}
+
+@keyframes dialog-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.985);
+    }
+}
+dialog[open] {
+    animation: dialog-in 180ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    dialog[open] {
+        animation: none;
+    }
 }

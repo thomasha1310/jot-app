@@ -1,0 +1,30 @@
+import type { Quote } from "../types";
+
+/** Built-in quotes, chosen for verifiable attribution. Add your own in settings. */
+export const BUILT_IN_QUOTES: Quote[] = [
+    { text: "All we have to decide is what to do with the time that is given us.", author: "J. R. R. Tolkien, The Fellowship of the Ring" },
+    { text: "Even the smallest person can change the course of the future.", author: "J. R. R. Tolkien, The Fellowship of the Ring" },
+    { text: "Not all those who wander are lost.", author: "J. R. R. Tolkien, The Fellowship of the Ring" },
+    { text: "It is not that we have a short time to live, but that we waste a lot of it.", author: "Seneca, On the Shortness of Life" },
+    { text: "Waste no more time arguing about what a good man should be. Be one.", author: "Marcus Aurelius, Meditations" },
+    { text: "Well begun is half done.", author: "Aristotle, Politics" },
+    { text: "I am not afraid of storms, for I am learning how to sail my ship.", author: "Louisa May Alcott, Little Women" },
+    { text: "How we spend our days is, of course, how we spend our lives.", author: "Annie Dillard, The Writing Life" },
+    { text: "If I have seen further it is by standing on the shoulders of Giants.", author: "Isaac Newton" },
+    { text: "Ever tried. Ever failed. No matter. Try again. Fail again. Fail better.", author: "Samuel Beckett, Worstward Ho" },
+    { text: "You must go on. I can't go on. I'll go on.", author: "Samuel Beckett, The Unnamable" },
+    { text: "I took a deep breath and listened to the old brag of my heart. I am, I am, I am.", author: "Sylvia Plath, The Bell Jar" },
+    { text: "One must imagine Sisyphus happy.", author: "Albert Camus, The Myth of Sisyphus" },
+    { text: "Do the difficult things while they are easy and do the great things while they are small.", author: "Lao Tzu, Tao Te Ching" },
+    { text: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu, Tao Te Ching" },
+    { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Will Durant, The Story of Philosophy" },
+    { text: "The first principle is that you must not fool yourself, and you are the easiest person to fool.", author: "Richard Feynman" },
+    { text: "I have no special talents. I am only passionately curious.", author: "Albert Einstein" },
+    { text: "Nothing in life is to be feared, it is only to be understood.", author: "Marie Curie" },
+    { text: "Begin at the beginning, and go on till you come to the end: then stop.", author: "Lewis Carroll, Alice's Adventures in Wonderland" },
+    { text: "Why, sometimes I've believed as many as six impossible things before breakfast.", author: "Lewis Carroll, Through the Looking-Glass" },
+    { text: "Isn't it nice to think that tomorrow is a new day with no mistakes in it yet?", author: "L. M. Montgomery, Anne of Green Gables" },
+    { text: "The best way out is always through.", author: "Robert Frost, A Servant to Servants" },
+    { text: "Rest is not idleness.", author: "John Lubbock, The Use of Life" },
+    { text: "It does not do to dwell on dreams and forget to live.", author: "J. K. Rowling, Harry Potter and the Philosopher's Stone" },
+];
