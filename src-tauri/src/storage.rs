@@ -66,8 +66,11 @@ pub fn run_git(dir: &Path, args: &[String], timeout: Duration) -> Result<GitOutp
     require_dir(dir)?;
 
     let mut cmd = Command::new("git");
+    // Keep jot.json byte-identical on every system: Git for Windows usually
+    // converts line endings, which would make the file churn between LF and CRLF.
     cmd.arg("-C")
         .arg(dir)
+        .args(["-c", "core.autocrlf=false"])
         .args(args)
         .env("GIT_TERMINAL_PROMPT", "0")
         .env("LC_ALL", "C")

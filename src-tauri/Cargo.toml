@@ -8,6 +8,8 @@ rust-version = "1.90"
 [lib]
 name = "jot_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
+# rustdoc can't link doctests for a staticlib crate, and there are none.
+doctest = false
 
 [build-dependencies]
 tauri-build = { version = "2.7.5", features = [] }

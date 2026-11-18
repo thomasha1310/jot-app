@@ -28,7 +28,8 @@ const backend: Backend = {
     },
     async git(dir, args) {
         try {
-            const { stdout, stderr } = await run("git", ["-C", dir, ...args], { env });
+            // Same flags as the Rust runner (src-tauri/src/storage.rs).
+            const { stdout, stderr } = await run("git", ["-C", dir, "-c", "core.autocrlf=false", ...args], { env });
             return { code: 0, stdout, stderr };
         } catch (e) {
             const err = e as { code?: number; stdout?: string; stderr?: string };
