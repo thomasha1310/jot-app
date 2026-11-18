@@ -1,0 +1,64 @@
+# Maintainer: Thomas Ha
+#
+# Builds jot from a tagged GitHub release against the system WebKitGTK.
+#   Install:  cd packaging/arch && makepkg -si
+#   Remove:   sudo pacman -R jot-app
+# New release: bump pkgver (reset pkgrel=1), then run `updpkgsums`.
+
+pkgname=jot-app
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="jot., a local-first planner for coursework"
+arch=('x86_64')
+url="https://github.com/thomasha1310/jot-app"
+license=('MIT')
+depends=('webkit2gtk-4.1' 'gtk3' 'git' 'hicolor-icon-theme')
+makedepends=('cargo' 'nodejs' 'npm')
+# Arch's LTO flags break linking for Rust crates with C deps.
+options=('!lto')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('5b5f19a000e5bc593f619e2e364b5daea8333debaaf8a48e2d8b39369c47fa9f')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  npm ci --no-audit --no-fund
+  cd src-tauri
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  # `tauri build` builds the frontend and enables the feature that embeds it;
+  # --no-bundle skips the deb/AppImage step since pacman is the bundle here.
+  npx --no-install tauri build --no-bundle -- --frozen
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  # The binary must be named `jot`: GTK uses it as the Wayland app id / X11
+  # WM class, which is how the taskbar matches the window to jot.desktop.
+  install -Dm755 src-tauri/target/release/jot "$pkgdir/usr/bin/jot"
+
+  install -Dm644 /dev/stdin "$pkgdir/usr/share/applications/jot.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=jot.
+GenericName=Planner
+Comment=$pkgdesc
+Exec=jot
+Icon=jot
+Terminal=false
+Categories=Office;
+StartupWMClass=jot
+EOF
+
+  local icons=src-tauri/icons hicolor="$pkgdir/usr/share/icons/hicolor"
+  install -Dm644 "$icons/32x32.png"      "$hicolor/32x32/apps/jot.png"
+  install -Dm644 "$icons/64x64.png"      "$hicolor/64x64/apps/jot.png"
+  install -Dm644 "$icons/128x128.png"    "$hicolor/128x128/apps/jot.png"
+  install -Dm644 "$icons/128x128@2x.png" "$hicolor/256x256/apps/jot.png"
+  install -Dm644 "$icons/icon.png"       "$hicolor/512x512/apps/jot.png"
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
