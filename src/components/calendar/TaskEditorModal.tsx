@@ -53,6 +53,7 @@ export function TaskEditorModal({ task, date, onClose }: TaskEditorModalProps) {
             courseId: courses[0]?.id ?? "",
             date: date ?? "",
             status: "not_started",
+            updatedAt: 0,
         },
     );
     const color = courses.find((c) => c.id === form.courseId)?.color;

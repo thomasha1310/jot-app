@@ -1,7 +1,11 @@
 import * as z from "zod";
 
+/** Last edit time (ms). Sync keeps whichever copy of a record is newer. */
+const updatedAt = z.number().default(0);
+
 export const CourseSchema = z.object({
     id: z.uuid(),
+    updatedAt,
     name: z.string(),
     color: z.string(),
     icon: z.string(),
@@ -10,6 +14,7 @@ export const CourseSchema = z.object({
 
 export const Coursework = z.object({
     id: z.uuid(),
+    updatedAt,
     courseId: z.string(),
     name: z.string(),
     /** Local calendar day, "YYYY-MM-DD". */
@@ -33,6 +38,7 @@ export const CourseItemSchema = z.discriminatedUnion("type", [
 
 export const TodoSchema = z.object({
     id: z.uuid(),
+    updatedAt,
     name: z.string(),
     isCompleted: z.boolean(),
     /** Set when the todo was made by dragging an assignment/exam into the list. */
@@ -62,6 +68,9 @@ export const AppStateSchema = z.object({
     courseItems: z.array(CourseItemSchema),
     todos: z.array(TodoSchema),
     settings: SettingsSchema,
+    settingsUpdatedAt: z.number().default(0),
+    /** id → when it was deleted, so a delete on one machine isn't undone by the other's copy. */
+    deletions: z.record(z.string(), z.number()).default({}),
 });
 
 export type AppState = z.infer<typeof AppStateSchema>;

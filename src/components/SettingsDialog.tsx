@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { useAppStore } from "../store";
 import { handleExport, handleImport } from "../utils/fileSystem";
 import type { Quote, QuoteSource } from "../types";
+import { DeleteAllData } from "./DeleteAllData";
+import { SyncSettings } from "./SyncSettings";
 import { Choices } from "./ui/Choices";
 import { Dialog, labelClass, quietButton } from "./ui/Dialog";
 
@@ -71,10 +73,13 @@ export function SettingsDialog({ onClose }: { onClose: () => void }) {
                     Show greeting
                 </label>
 
+                <SyncSettings />
+
                 <div>
-                    <p className={labelClass}>Your data</p>
+                    <p className={labelClass}>Backups</p>
                     <p className="mb-3">
-                        Everything stays on this computer. Export a backup to keep it somewhere else.
+                        Export saves everything as a file. Import merges a backup into what's here,
+                        keeping the newer copy of anything in both.
                     </p>
                     <div className="flex gap-2">
                         <button type="button" onClick={() => handleExport(store)} className={`${quietButton} border border-line`}>
@@ -92,13 +97,21 @@ export function SettingsDialog({ onClose }: { onClose: () => void }) {
                                 const file = e.target.files?.[0];
                                 if (!file) return;
                                 const error = await handleImport(file, importData);
-                                setImportMessage(error ?? "Backup imported.");
+                                setImportMessage(error ?? "Backup merged in.");
                                 e.target.value = "";
                             }}
                         />
                     </div>
                     {importMessage && <p role="status" className="mt-2 text-sm">{importMessage}</p>}
                 </div>
+
+                <DeleteAllData
+                    onDeleted={() => {
+                        // Otherwise the box would re-save the old quotes on blur.
+                        setQuotesText("");
+                        setImportMessage(null);
+                    }}
+                />
             </div>
         </Dialog>
     );

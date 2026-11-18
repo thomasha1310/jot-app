@@ -1,14 +1,19 @@
+import { useEffect } from "react";
 import { DragDropProvider, type DragDropEventHandlers } from "@dnd-kit/react";
 import { Dashboard } from "./components/Dashboard";
 import { LeftColumn } from "./components/LeftColumn";
 import { TODO_DROP_ID } from "./components/todo-list/TodoList";
 import { useAppStore } from "./store";
+import { startSyncEngine } from "./sync/engine";
 
 type DragEnd = Parameters<NonNullable<DragDropEventHandlers["onDragEnd"]>>[0];
 
 export default function App() {
     const updateTask = useAppStore((s) => s.updateTask);
     const addTodoFromItem = useAppStore((s) => s.addTodoFromItem);
+
+    // Desktop only: save to the chosen folder and sync with git. No-op in a browser.
+    useEffect(() => startSyncEngine(), []);
 
     // Assignments can be dropped on a day (reschedule) or on the to-do list.
     const handleDragEnd = (event: DragEnd) => {

@@ -1,3 +1,4 @@
+import { pickData } from "../store";
 import { AppStateSchema, type AppState } from "../types";
 
 /** Returns an error message, or null on success. */
@@ -20,13 +21,7 @@ export const handleImport = async (
 };
 
 export const handleExport = (state: AppState) => {
-    const data: AppState = {
-        version: state.version,
-        courses: state.courses,
-        courseItems: state.courseItems,
-        todos: state.todos,
-        settings: state.settings,
-    };
+    const data = pickData(state);
     const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
     });

@@ -3,6 +3,7 @@ import { Settings } from "lucide-react";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { QuoteCard } from "./QuoteCard";
 import { SettingsDialog } from "./SettingsDialog";
+import { SyncStatusLine } from "./SyncStatusLine";
 import { TodoList } from "./todo-list/TodoList";
 
 export function LeftColumn() {
@@ -26,6 +27,7 @@ export function LeftColumn() {
             </div>
             <QuoteCard />
             <TodoList />
+            <SyncStatusLine onOpenSettings={() => setSettingsOpen(true)} />
             {settingsOpen && <SettingsDialog onClose={() => setSettingsOpen(false)} />}
         </aside>
     );
